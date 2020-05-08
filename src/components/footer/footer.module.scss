@@ -1,0 +1,11 @@
+@import '../../styles/vars.scss';
+
+.footer {
+  height: 60px;
+  background: $backgroundBlock;
+  color: #fff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-transform: uppercase;
+}

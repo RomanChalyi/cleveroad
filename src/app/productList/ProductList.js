@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const ProductList = ({}) => {
-  return <div>ProductList</div>;
+  return <div className="content">ProductList</div>;
 };
 
 const mapStateToProps = (state) => ({});

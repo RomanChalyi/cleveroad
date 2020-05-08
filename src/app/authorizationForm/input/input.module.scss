@@ -1,0 +1,30 @@
+.input {
+  width: 100%;
+  margin: 10px 0;
+  height: 30px;
+  outline: none;
+  background: inherit;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  &Button {
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: url('../../../image/cancel.png') no-repeat;
+    background-size: contain;
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+  }
+}
+.label {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+}

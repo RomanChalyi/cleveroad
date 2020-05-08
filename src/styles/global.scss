@@ -1,0 +1,25 @@
+@import './vars.scss';
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  text-decoration: none;
+  color: #fff;
+  transition: 0.3s;
+  font-size: 18px;
+  &:visited {
+    color: #fff;
+  }
+  &:hover {
+    color: #ff0000;
+  }
+}
+
+.content {
+  background-color: $backgroundContent;
+  min-height: 100vh;
+}
