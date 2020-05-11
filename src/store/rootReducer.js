@@ -1,5 +1,8 @@
 import { combineReducers } from 'redux';
 import statuses from '../app/reducer';
-import productList from '../app/productList/reducer';
+import backpackList from '../app/backpackList/reducer';
 
-export default combineReducers({ statuses, productList });
+export default combineReducers({
+  statuses,
+  backpackList,
+});

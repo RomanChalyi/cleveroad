@@ -4,6 +4,7 @@ import { store } from './store/store';
 import { Provider } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { Router } from 'react-router-dom';
+
 import './styles/global.scss';
 
 const customHistory = createBrowserHistory();

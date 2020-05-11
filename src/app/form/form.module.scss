@@ -1,0 +1,26 @@
+@import '../../styles/vars.scss';
+
+.backgroundForm {
+  background: #fff;
+  border-radius: 5px;
+  min-height: 60vh;
+  .cardMedia {
+    height: 300px;
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    position: relative;
+    margin-bottom: 30px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .buttonGroup {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px;
+  }
+}

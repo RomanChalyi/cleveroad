@@ -1,60 +1,56 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import Input from './input/Input';
-import { form, paddingTop, formWrapper, inputGroup, submit } from './authorizationForm.module.scss';
+import Input from '../../components/input/Input';
+import { userSignUp, userSignIn } from '../action';
+import { form, inputGroup } from './authorizationForm.module.scss';
+import { Typography, Button, Container } from '@material-ui/core';
 
-const AuthorizationForm = ({ isAuthorization }) => {
-  const [login, setLogin] = useState('');
+const AuthorizationForm = ({ isSignIn, userSignIn, userSignUp, history }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleChangeLogin = (e) => setLogin(e.target.value);
-  const handleClearLogin = (e) => setLogin('');
+  const handleChangeEmail = (e) => setEmail(e.target.value);
+  const handleClearEmail = (e) => setEmail('');
+
   const handleChangePassword = (e) => setPassword(e.target.value);
   const handleClearPassword = (e) => setPassword('');
 
-  if (isAuthorization) {
-    return <Redirect to="/" />;
-  }
+  const handleClick = (e) =>
+    isSignIn ? userSignIn(email, password, history) : userSignUp(email, password);
 
-  const handleSubmit = (e) => false;
   return (
-    <div className={`content ${paddingTop}`}>
-      <div className={formWrapper}>
-        <form className={form}>
-          <h2>Login Form</h2>
-          <div className={inputGroup}>
-            <Input
-              name="login"
-              placeholder="Login:"
-              type="text"
-              value={login}
-              onChange={handleChangeLogin}
-              clearInput={handleClearLogin}
-            />
-            <Input
-              name="password"
-              placeholder="Password:"
-              type="password"
-              value={password}
-              onChange={handleChangePassword}
-              clearInput={handleClearPassword}
-            />
-          </div>
-          <input
-            className={submit}
-            type="submit"
-            name="submit"
-            onSubmit={handleSubmit}
-            value="Login"
+    <Container className="content padding">
+      <Container maxWidth="md" className={form}>
+        <Typography variant="h4" align="center">
+          Login Form
+        </Typography>
+        <div className={inputGroup}>
+          <Input
+            name="email"
+            placeholder="Email:"
+            type="text"
+            value={email}
+            onChange={handleChangeEmail}
+            clearInput={handleClearEmail}
           />
-        </form>
-      </div>
-    </div>
+          <Input
+            name="password"
+            placeholder="Password:"
+            type="password"
+            value={password}
+            onChange={handleChangePassword}
+            clearInput={handleClearPassword}
+          />
+        </div>
+        <Button onClick={handleClick} size="large" variant="outlined" color="inherit">
+          {isSignIn ? 'Sing in' : 'Sing up'}
+        </Button>
+      </Container>
+    </Container>
   );
 };
 
-const mapStateToProps = (state) => ({ isAuthorization: state.statuses.isAuthorization });
-const mapDispatchToProps = {};
+const mapStateToProps = (state) => ({ user: state.statuses.user });
+const mapDispatchToProps = { userSignUp, userSignIn };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorizationForm);

@@ -1,14 +1,16 @@
 import React from 'react';
-import { spinner, spinnerBackground } from './spinner.module.scss';
+import { Box, CircularProgress } from '@material-ui/core';
+import { spinner } from './spinner.module.scss';
 
 const Spinner = ({ isLoading }) => {
   if (!isLoading) {
     return null;
   }
+
   return (
-    <div className={spinner}>
-      <div className={spinnerBackground}></div>
-    </div>
+    <Box className={spinner}>
+      <CircularProgress />
+    </Box>
   );
 };
 

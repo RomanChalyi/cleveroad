@@ -1,9 +1,15 @@
 @import '../../styles/vars.scss';
-.header {
-  height: 60px;
-  background: $backgroundBlock;
-  color: #fff;
+
+.headerLink:hover {
+  color: #f50057;
+  transition: 0.2s;
+}
+
+.linkBox {
+  width: 100%;
   display: flex;
   justify-content: space-around;
-  align-items: center;
+}
+.avatar {
+  text-transform: uppercase;
 }

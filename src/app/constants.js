@@ -1,0 +1,11 @@
+export const LOADING_START = 'LOADING_START';
+export const LOADING_END = 'LOADING_END';
+
+export const SHOW_ERROR_MESSAGE = 'SHOW_ERROR_MESSAGE';
+export const HIDE_ERROR_MESSAGE = 'HIDE_ERROR_MESSAGE';
+export const HIDE_MESSAGE = 'HIDE_MESSAGE';
+export const SHOW_MESSAGE = 'SHOW_MESSAGE';
+
+export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS';
+
+export const ADD_PRODUCT = 'ADD_PRODUCT';

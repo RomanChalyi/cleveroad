@@ -1,0 +1,26 @@
+@import '../../../styles/vars.scss';
+.card {
+  max-width: 345px;
+  position: relative;
+  margin: 5px;
+  &Price {
+    text-decoration: line-through;
+  }
+  &Icon {
+    background-color: #d6d6d6;
+    transform: scale(0.8);
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+  &IconEdit {
+    transform: scale(1.3);
+  }
+}
+
+@media (max-width: $mobile) {
+  .card {
+    margin: 5px 0;
+  }
+}
