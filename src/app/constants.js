@@ -7,5 +7,3 @@ export const HIDE_MESSAGE = 'HIDE_MESSAGE';
 export const SHOW_MESSAGE = 'SHOW_MESSAGE';
 
 export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS';
-
-export const ADD_PRODUCT = 'ADD_PRODUCT';

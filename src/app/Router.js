@@ -12,6 +12,7 @@ const Router = () => {
       <Route exact path="/sign_in" render={(props) => <AuthorizationForm {...props} isSignIn />} />
       <Route exact path="/sign_up" component={AuthorizationForm} />
       <Route exact path="/add" component={Form} />
+      <Route exact path="/edit:id" render={(props) => <Form {...props} isEdit />} />
       <Route component={NoMatchPage} />
     </Switch>
   );

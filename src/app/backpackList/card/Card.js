@@ -11,7 +11,16 @@ import EditIcon from '@material-ui/icons/Edit';
 import { getDays } from '../../../utils';
 import { card, cardIcon, cardIconEdit, cardPrice } from './card.module.scss';
 
-const Card = ({ title, description, photo, price, discountPrice, discountPricePeriod }) => {
+const Card = ({
+  title,
+  description,
+  photo,
+  price,
+  discountPrice,
+  discountPricePeriod,
+  handleEdit,
+  id,
+}) => {
   return (
     <MaterialCard className={card}>
       <CardMedia component="img" alt="backpack" height="280" image={photo} title="backpack" />
@@ -32,7 +41,7 @@ const Card = ({ title, description, photo, price, discountPrice, discountPricePe
         >
           ${price}
         </Typography>
-        {discountPrice && (
+        {!!discountPrice && (
           <>
             <Typography variant="body1" align="center" color="secondary" component="p">
               -{discountPrice}%
@@ -40,16 +49,14 @@ const Card = ({ title, description, photo, price, discountPrice, discountPricePe
             <Typography variant="body1" align="center" color="secondary" component="p">
               ${(price * (1 - discountPrice / 100)).toFixed(2)}
             </Typography>
+            <Typography variant="body1" align="center" color="primary" component="p">
+              Will end {getDays(discountPricePeriod)}
+            </Typography>
           </>
-        )}
-        {discountPricePeriod && (
-          <Typography variant="body1" align="center" color="primary" component="p">
-            Will end {getDays(discountPricePeriod)}
-          </Typography>
         )}
       </CardContent>
       <CardActions className={cardIcon}>
-        <IconButton className={cardIconEdit} color="primary">
+        <IconButton onClick={handleEdit(id)} className={cardIconEdit} color="primary">
           <EditIcon />
         </IconButton>
       </CardActions>

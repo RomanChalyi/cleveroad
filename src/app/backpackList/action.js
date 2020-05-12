@@ -2,7 +2,7 @@ import { LOAD_BACKPACK_RESULT } from './constants';
 import { BackpackDB } from '../../firebaseConfig';
 import { loadingStart, loadingEnd, showErrorMessage } from '../action';
 
-export const loadBackpacks = () => async (dispatch) => {
+export const loadBackpackList = () => async (dispatch) => {
   try {
     dispatch(loadingStart());
     const querySnapshot = await BackpackDB.get();

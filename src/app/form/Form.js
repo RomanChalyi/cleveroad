@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
   IconButton,
   Container,
@@ -11,35 +13,83 @@ import {
   Button,
   CardMedia,
 } from '@material-ui/core';
-import { showErrorMessage, addProduct } from '../action';
-import { Link } from 'react-router-dom';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { connect } from 'react-redux';
+import { showErrorMessage, addProduct, loadingStart, loadingEnd } from '../action';
+import { editProduct } from './action';
+import { BackpackDB } from '../../firebaseConfig';
+import {
+  backgroundForm,
+  cardMedia,
+  buttonGroup,
+  iconButton,
+  displayNone,
+  icon,
+} from './form.module.scss';
+import { checkFormData, getDatabaseDate } from '../../utils/index';
 
-import { backgroundForm, cardMedia, buttonGroup } from './form.module.scss';
+const Form = ({
+  showErrorMessage,
+  addProduct,
+  history,
+  isEdit,
+  loadingStart,
+  loadingEnd,
+  editProduct,
+}) => {
+  useEffect(() => {
+    if (isEdit) {
+      const { pathname } = history.location;
+      const id = pathname.slice(6);
+      loadingStart();
+      BackpackDB.doc(id)
+        .get()
+        .then((querySnapshot) => {
+          loadingEnd();
+          const data = querySnapshot.data();
+          if (data.discountPrice) {
+            data.discountPeriod = new Date(data.discountPeriod.seconds * 1000);
+            return setFormData({ ...data, error: false, useDiscount: true });
+          }
+          return setFormData({
+            ...data,
+            error: false,
+            useDiscount: false,
+            discountPrice: 0,
+            discountPeriod: new Date(),
+          });
+        });
+    }
+  }, []);
 
-const Form = ({ showErrorMessage, addProduct, history }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [photo, setPhoto] = useState('');
-  const [price, setPrice] = useState('');
-  const [discountPrice, setDiscountPrice] = useState('');
-  const [discountPricePeriod, setDiscountPricePeriod] = useState(new Date());
-  const [useDiscount, setUseDiscountPrice] = useState(false);
-  const [error, setError] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    photo: '',
+    price: '',
+    discountPrice: 1,
+    discountPeriod: new Date(),
+    useDiscount: false,
+    error: false,
+  });
 
-  const handleChangeTitle = (e) => setTitle(e.target.value);
-  const handleChangeDetails = (e) => setDescription(e.target.value);
-  const handleChangeDiscountPrice = (e) => setDiscountPrice(e.target.value);
-  const handleChangeUseDiscount = (e) => setUseDiscountPrice(e.target.checked);
-  const handleChangeDiscountPeriod = (date) => setDiscountPricePeriod(date);
+  const handleChangeTitle = (e) => setFormData({ ...formData, title: e.target.value });
+
+  const handleChangeDetails = (e) => setFormData({ ...formData, description: e.target.value });
+
+  const handleChangeDiscountPrice = (e, newValue) =>
+    setFormData({ ...formData, discountPrice: newValue });
+
+  const handleChangeUseDiscount = (e) =>
+    setFormData({ ...formData, useDiscount: e.target.checked });
+
+  const handleChangeDiscountPeriod = (date) => setFormData({ ...formData, discountPeriod: date });
+
   const handleChangePrice = (e) => {
-    const { value } = e.target;
-    if (isFinite(value)) {
-      setPrice(value);
+    if (isFinite(e.target.value)) {
+      return setFormData({ ...formData, price: e.target.value });
     }
     return null;
   };
@@ -50,62 +100,48 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      setPhoto(reader.result);
+      setFormData({ ...formData, photo: reader.result });
     };
   };
 
-  const validateForm = () => [title, description, photo, price].every((data) => data.trim() !== '');
+  const showError = () => {
+    setFormData({ ...formData, error: true });
+    return showErrorMessage('The form has been filled out incorrectly');
+  };
 
   const handleClick = () => {
-    if (validateForm()) {
-      if (!useDiscount) {
-        return addProduct({ title, description, photo, price }, history);
-      } else {
-        return addProduct(
-          {
-            title,
-            description,
-            photo,
-            price,
-            discountPrice,
-            discountPricePeriod,
-          },
-          history
-        );
-      }
+    if (checkFormData(formData)) {
+      const dbData = getDatabaseDate(formData);
+      return isEdit ? editProduct(dbData, history) : addProduct(dbData, history);
     }
-    setError(true);
-    return showErrorMessage('The form has been filled out incorrectly');
+    return showError();
   };
 
   return (
     <Container className="padding">
-      <Container className={backgroundForm} style={{ border: '1px solid' }} maxWidth="sm">
+      <Container className={backgroundForm} maxWidth="sm">
         <CardMedia
           className={cardMedia}
           style={
-            photo
+            formData.photo
               ? {}
-              : error
+              : formData.error
               ? { background: '#636363', border: '1px solid red' }
               : { background: '#636363' }
           }
-          image={photo}
+          image={formData.photo}
           title="backpack"
         >
-          {!photo && (
+          {!formData.photo && (
             <Typography variant="h3" component="h4">
               NO IMAGE
             </Typography>
           )}
-          <IconButton
-            style={{ position: 'absolute', top: '5px', right: '5px', transform: 'scale(2)' }}
-            color="primary"
-          >
+          <IconButton className={iconButton} color="primary">
             <label>
-              <i style={{ display: 'none' }}>attach_file</i>
-              {photo ? <EditIcon /> : <AddIcon />}
-              <input style={{ display: 'none' }} onChange={handleChangePhoto} type="file" />
+              <i className={displayNone}>attach_file</i>
+              {formData.photo ? <EditIcon className={icon} /> : <AddIcon className={icon} />}
+              <input className={displayNone} onChange={handleChangePhoto} type="file" />
             </label>
           </IconButton>
         </CardMedia>
@@ -113,9 +149,9 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
           Title:
         </Typography>
         <TextField
-          error={error && !title.trim()}
+          error={formData.error && !formData.title.trim()}
           onChange={handleChangeTitle}
-          value={title}
+          value={formData.title}
           id="form-title"
           fullWidth
           variant="outlined"
@@ -125,14 +161,14 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
           Description:
         </Typography>
         <TextField
-          value={description}
+          value={formData.description}
           onChange={handleChangeDetails}
           fullWidth
           id="form-description"
           multiline
           rows="4"
           variant="outlined"
-          error={error && !description.trim()}
+          error={formData.error && !formData.description.trim()}
         />
 
         <Typography align="center" variant="h6" component="p">
@@ -140,10 +176,10 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
         </Typography>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
           <Input
-            error={error && !price.trim()}
+            error={formData.error && !formData.price.toString().trim() && !!formData.price}
             id="price"
             color="primary"
-            value={price}
+            value={formData.price}
             onChange={handleChangePrice}
             startAdornment={
               <InputAdornment variant="standard" position="start">
@@ -154,9 +190,9 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
         </div>
 
         <Typography align="center" variant="h6" component="p">
-          Use discountPrice
+          Use Discount
           <Checkbox
-            checked={useDiscount}
+            checked={formData.useDiscount}
             onChange={handleChangeUseDiscount}
             name="checkedB"
             color="primary"
@@ -164,18 +200,18 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
         </Typography>
         <div style={{ display: 'flex' }}>
           <Slider
-            defaultValue={discountPrice}
+            value={formData.discountPrice}
             onChange={handleChangeDiscountPrice}
             aria-labelledby="discountPrice"
             valueLabelDisplay="auto"
             step={1}
-            min={0}
+            min={1}
             max={99}
-            disabled={!useDiscount}
+            disabled={!formData.useDiscount}
           />
           <Typography
             style={{ marginLeft: '10px' }}
-            color={useDiscount ? 'inherit' : 'textSecondary'}
+            color={formData.useDiscount ? 'inherit' : 'textSecondary'}
             align="center"
             variant="h5"
             component="p"
@@ -191,18 +227,18 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
             format="MM/dd/yyyy"
             margin="normal"
             id="date-picker-inline"
-            label="discountPrice Period"
-            value={discountPricePeriod}
+            label="discountPeriod"
+            value={formData.discountPeriod}
             onChange={handleChangeDiscountPeriod}
             KeyboardButtonProps={{
               'aria-label': 'change date',
             }}
-            disabled={!useDiscount}
+            disabled={!formData.useDiscount}
           />
         </MuiPickersUtilsProvider>
         <div className={buttonGroup}>
           <Button onClick={handleClick} variant="contained" color="primary">
-            Add
+            {isEdit ? 'Edit' : 'Add'}
           </Button>
           <Button component={Link} to="/" variant="contained" color="secondary">
             Cancel
@@ -213,6 +249,6 @@ const Form = ({ showErrorMessage, addProduct, history }) => {
   );
 };
 const mapStateToProps = (state) => ({});
-const mapDispatchToProps = { showErrorMessage, addProduct };
+const mapDispatchToProps = { showErrorMessage, addProduct, editProduct, loadingStart, loadingEnd };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form);

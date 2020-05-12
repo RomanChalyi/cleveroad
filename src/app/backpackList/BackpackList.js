@@ -2,27 +2,31 @@ import React, { useEffect } from 'react';
 import { Container, Typography, Button } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { loadBackpacks } from './action';
+import { loadBackpackList } from './action';
 import AddIcon from '@material-ui/icons/Add';
 
-import Backpack from './card/Card';
+import Card from './card/Card';
 import { list } from './backpackList.module.scss';
 
-const BackpackList = ({ loadBackpacks, backpacks }) => {
+const BackpackList = ({ loadBackpackList, backpacks, history }) => {
   useEffect(() => {
-    loadBackpacks();
+    loadBackpackList();
   }, []);
+
+  const handleEdit = (id) => () => {
+    history.push(`edit:${id}`);
+  };
   return (
     <Container style={{ paddingLeft: 0, paddingRight: 0 }} className="padding">
       <Typography align="center" gutterBottom>
         <Button component={Link} to="/add" variant="contained" color="primary">
           <AddIcon />
-          add backpack
+          add Card
         </Button>
       </Typography>
       <Container maxWidth="xl" className={list}>
         {backpacks.map((backpack) => (
-          <Backpack
+          <Card
             title={backpack.title}
             description={backpack.description}
             photo={backpack.photo}
@@ -32,6 +36,8 @@ const BackpackList = ({ loadBackpacks, backpacks }) => {
               backpack.discountPricePeriod && backpack.discountPricePeriod.seconds
             }
             key={backpack.id}
+            id={backpack.id}
+            handleEdit={handleEdit}
           />
         ))}
       </Container>
@@ -42,6 +48,6 @@ const BackpackList = ({ loadBackpacks, backpacks }) => {
 const mapStateToProps = (state) => ({
   backpacks: state.backpackList,
 });
-const mapDispatchToProps = { loadBackpacks };
+const mapDispatchToProps = { loadBackpackList };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackpackList);

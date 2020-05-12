@@ -1,5 +1,5 @@
 import React from 'react';
-import { input, inputButton, label } from './input.module.scss';
+import { input, label } from './input.module.scss';
 
 const Input = ({ name, placeholder, type, value, onChange }) => {
   return (

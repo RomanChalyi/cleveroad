@@ -4,6 +4,8 @@
   background: #fff;
   border-radius: 5px;
   min-height: 60vh;
+  border: 2px solid #3f51b5;
+
   .cardMedia {
     height: 300px;
     border-radius: 5px;
@@ -18,9 +20,53 @@
     background-position: center;
     background-repeat: no-repeat;
   }
+
   .buttonGroup {
     display: flex;
     justify-content: space-around;
     margin: 30px;
+  }
+
+  .iconButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgb(197, 197, 197);
+    padding: 15px 20px;
+    &:hover {
+      background-color: rgb(197, 197, 197);
+    }
+  }
+
+  .icon {
+    margin-top: 5px;
+  }
+
+  .displayNone {
+    display: none;
+  }
+}
+
+@media (max-width: $tablet) {
+  .backgroundForm {
+    .cardMedia {
+      height: 250px;
+    }
+  }
+}
+
+@media (max-width: $mobile) {
+  .backgroundForm {
+    .cardMedia {
+      height: 200px;
+    }
+
+    .iconButton {
+      padding: 5px 10px;
+    }
+
+    .icon {
+      transform: scale(0.8);
+    }
   }
 }

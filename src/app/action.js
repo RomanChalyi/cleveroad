@@ -6,7 +6,6 @@ import {
   SHOW_MESSAGE,
   LOADING_END,
   SIGN_IN_SUCCESS,
-  ADD_PRODUCT,
 } from './constants';
 import { signIn, signUp, BackpackDB } from '../firebaseConfig';
 import app from 'firebase/app';
